@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 class TextCNN(object):
-    def __init__(self, sequence_size, num_classes, vocab_size, embedding_size, filter_sizes, num_filters):
+    def __init__(self, sequence_size, num_classes, vocab_size, embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
 
         #placeholders for input,output,dropout
         self.input_x = tf.placeholder(tf.int32, [None, sequence_size], name="input")
@@ -50,4 +50,33 @@ class TextCNN(object):
                 )
                 pooled_outputs.append(pooled)
 
+        #combine all the pooled features
+        num_filters_total = num_filters * len(filter_sizes)
+        self.h_pool = tf.concat(pooled_outputs, 3)
+        self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
 
+        #add dropout layer
+        with tf.name_scope("dropout"):
+            self.drop = tf.nn.dropout(self.h_pool_flat, self.dropout_keep_prob)
+
+        #output scores and predictions
+        with tf.name_scope("output"):
+            W = tf.get_variable(
+                "W",
+                shape = [num_filters_total, num_classes],
+                initializer=tf.contrib.layers.xavier_initializer())
+            b = tf.Variable(tf.constant(0.1, shape=[num_classes]), name="b")
+            l2_loss += tf.nn.l2_loss(W)
+            l2_loss += tf.nn.l2_loss(b)
+            self.scores = tf.nn.xw_plus_b(self.drop, W, b, name="scores")
+            self.predictions = tf.arg_max(self.scores, 1, name="predictions")
+
+        #define loss 计算scores 和 self.input_y的损失函数
+        with tf.name_scope("loss"):
+            losses = tf.nn.softmax_cross_entropy_with_logits(logits=self.scores, labels=self.input_y)
+            self.loss = tf.reduce_mean(losses) + l2_loss * l2_reg_lambda
+
+        #Accuracy
+        with tf.name_scope("accuracy"):
+            correct_predictions = tf.equal(self.predictions, tf.arg_max(self.input_y, 1))
+            self.accuracy = tf.reduce_mean(tf.cast(correct_predictions, "float"), name="accuracy")
