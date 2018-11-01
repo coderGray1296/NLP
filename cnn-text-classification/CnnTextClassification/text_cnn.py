@@ -52,7 +52,12 @@ class TextCNN(object):
 
         #combine all the pooled features
         num_filters_total = num_filters * len(filter_sizes)
+        # 对pooled_outputs在第四个维度上进行合并，变成一个[None,1,1,层数*输出通道数]Tensor张量
+        # 将不同核产生的计算结果（features）拼接起来
+        # tf.concat(values, concat_dim)连接values中的矩阵，concat_dim指定在哪一维（从0计数）连接
         self.h_pool = tf.concat(pooled_outputs, 3)
+        # 把每一个max-pooling之后的张量合并起来之后得到一个长向量 [batch_size, num_filters_total]
+        # 展开成两维Tensor[None,384]
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
 
         #add dropout layer

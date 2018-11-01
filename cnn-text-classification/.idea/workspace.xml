@@ -14,8 +14,8 @@
       <file leaf-file-name="preprocessing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CnnTextClassification/preprocessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="17" column="42" lean-forward="false" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
+            <state relative-caret-position="-57">
+              <caret line="21" column="33" lean-forward="true" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -23,11 +23,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="text_cnn.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="text_cnn.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CnnTextClassification/text_cnn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="61" column="38" lean-forward="false" selection-start-line="61" selection-start-column="38" selection-end-line="61" selection-end-column="38" />
+            <state relative-caret-position="623">
+              <caret line="82" column="0" lean-forward="true" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -35,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="train.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CnnTextClassification/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="7" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+            <state relative-caret-position="153">
+              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -55,6 +55,11 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>contrib</find>
+    </findStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -103,8 +108,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -132,6 +135,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -253,6 +258,36 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/CnnTextClassification/preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="17" column="42" lean-forward="false" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CnnTextClassification/text_cnn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1020">
+          <caret line="61" column="38" lean-forward="false" selection-start-line="61" selection-start-column="38" selection-end-line="61" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CnnTextClassification/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="7" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CnnTextClassification/preprocessing.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
@@ -328,28 +363,28 @@
     <entry file="file://$PROJECT_DIR$/CnnTextClassification/data/calculator.py" />
     <entry file="file://$PROJECT_DIR$/CnnTextClassification/preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="17" column="42" lean-forward="false" selection-start-line="17" selection-start-column="42" selection-end-line="17" selection-end-column="42" />
+        <state relative-caret-position="-57">
+          <caret line="21" column="33" lean-forward="true" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CnnTextClassification/text_cnn.py">
+    <entry file="file://$PROJECT_DIR$/CnnTextClassification/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="61" column="38" lean-forward="false" selection-start-line="61" selection-start-column="38" selection-end-line="61" selection-end-column="38" />
+        <state relative-caret-position="153">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CnnTextClassification/train.py">
+    <entry file="file://$PROJECT_DIR$/CnnTextClassification/text_cnn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="7" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+        <state relative-caret-position="623">
+          <caret line="82" column="0" lean-forward="true" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>

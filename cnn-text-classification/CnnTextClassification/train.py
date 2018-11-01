@@ -3,4 +3,8 @@ import numpy as np
 import time
 import datetime
 import os
-import 
+from text_cnn import TextCNN
+import preprocessing
+from tensorflow.contrib import learn
+
+
