@@ -37,7 +37,8 @@ def load_data(positive_data_file, negative_data_file):
     negative_examples = [[1, 0] for _ in negative_examples]
     #print(positive_examples)
     y = np.concatenate([positive_examples + negative_examples], 0)
-    print(text, y)
+    return text, y
+    #print(text, y)
 
 #generator batch_data
 def batch_iter(data, batch_size, num_epochs, shuffle=True):
