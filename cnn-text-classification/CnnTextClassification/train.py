@@ -69,8 +69,17 @@ with tf.Graph().as_default():
     sess = tf.Session(config=session_conf)
     with sess.as_default():
         cnn = TextCNN(
-            
+            sequence_size = x_train.shape[1],
+            num_classes = y_train.shape[1],
+            vocab_size = len(vocab.vocabulary_),
+            embedding_size = embedding_dim,
+            filter_sizes = filter_sizes,
+            num_filters = num_filters,
+            l2_reg_lambda = l2_reg_lambda
         )
+        #Define training procedure
+        global_step = tf.Variable(0, name="global_step", trainable=False)
+        #print(global_step)
 
 
 

@@ -1,5 +1,7 @@
 import tensorflow as tf
 import numpy as np
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 class TextCNN(object):
     def __init__(self, sequence_size, num_classes, vocab_size, embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
@@ -7,16 +9,14 @@ class TextCNN(object):
         #placeholders for input,output,dropout
         self.input_x = tf.placeholder(tf.int32, [None, sequence_size], name="input")
         self.input_y = tf.placeholder(tf.float32, [None, num_classes], name="output")
-        self.dropout_keep_prob = tf.placeholder
+        self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout")
 
         #keep track of l2 regularzation
         l2_loss = tf.constant(0.0)
 
         # Embedding layer
         with tf.device('/cpu:0'), tf.name_scope("embedding"):
-            self.W = tf.Variable(
-                tf.random_uniform([vocab_size, embedding_size], -1.0, 1.0),
-                name="W")
+            self.W = tf.Variable(tf.random_uniform([vocab_size, embedding_size], -1.0, 1.0),name="W")
             self.embedded_chars = tf.nn.embedding_lookup(self.W, self.input_x)
             #[batch_size, height, weight, input_channels] 其中batch_size为None
             self.embedded_chars_expanded = tf.expand_dims(self.embedded_chars, -1)
@@ -29,7 +29,7 @@ class TextCNN(object):
                 #[height, weight, input_channels, output_channels]第三个参数和输入的第四个参数一致
                 filter_shape = [filter_size, embedding_size, 1, num_filters]
                 W = tf.Variable(tf.truncated_normal(filter_shape, stddev=0.1), name="W")
-                b = tf.Variable(tf.constant(0.1, [num_filters]), name="b")
+                b = tf.Variable(tf.constant(0.1, shape=[num_filters]), name="b")
                 conv = tf.nn.conv2d(
                     self.embedded_chars_expanded,
                     W,
