@@ -96,3 +96,21 @@ with tf.Graph().as_default():
 
         #定义模型保存的目录
         timestamp = str(int(time.time()))
+        out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
+        print('Writting to {}\n'.format(out_dir))
+
+        #保存损失函数和准确率的参数
+        loss_summary = tf.summary.scalar("loss", cnn.loss)
+        acc_summary = tf.summary.scalar("accuracy", cnn.accuracy)
+
+        #store training datas
+        train_summary_op = tf.summary.merge([grad_summaries_merged, loss_summary, acc_summary])
+        train_summary_dir = os.path.join(out_dir, "summaries", "train")
+        train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
+
+        #store test datas
+        test_summary_op = tf.summary.merge([loss_summary, acc_summary])
+        test_summary_dir = os.path.join(out_dir, "summaries", "test")
+        test_summary_writer = tf.summary.FileWriter(test_summary_dir, sess.graph)
+
+
