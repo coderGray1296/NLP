@@ -80,9 +80,19 @@ with tf.Graph().as_default():
         #Define training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
         #print(global_step)
+        optimizer = tf.train.AdamOptimizer(1e-3)
+        grads_and_vars = optimizer.compute_gradients(cnn.loss)
+        train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
+        #记录梯度变化和稀疏度(可选)
+        grad_summaries = []
+        for g, v in grads_and_vars:
+            if g is not None:
+                grad_hist_summary = tf.summary.histogram("{}/grad/hist".format(v.name), g)
+                sparsity_summary = tf.summary.scalar("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
+                grad_summaries.append(grad_hist_summary)
+                grad_summaries.append(sparsity_summary)
+        grad_summaries_merged = tf.summary.merge(grad_summaries)
 
-
-
-
-
+        #定义模型保存的目录
+        timestamp = str(int(time.time()))
