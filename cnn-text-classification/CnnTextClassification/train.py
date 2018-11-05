@@ -122,7 +122,7 @@ with tf.Graph().as_default():
         vocab.save(os.path.join(out_dir, "vocab"))
 
         #初始化所有变量
-        sess.run(tf.global_variables_initializer)
+        sess.run(tf.global_variables_initializer())
 
 
         # training step
@@ -166,5 +166,6 @@ with tf.Graph().as_default():
             if current_step % checkpoint_every == 0:
                 path = saver.save(sess, './', global_step=current_step)
                 print("Saved model checkpoint to {}\n".format(path))
-                print('finished training and testing')
+                print('model finished')
+
 
