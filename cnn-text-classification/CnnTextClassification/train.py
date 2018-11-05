@@ -113,4 +113,58 @@ with tf.Graph().as_default():
         test_summary_dir = os.path.join(out_dir, "summaries", "test")
         test_summary_writer = tf.summary.FileWriter(test_summary_dir, sess.graph)
 
+        #checkpoint dir 由于tf默认这个文件夹是存在的，所以需要新建
+        checkpoint_dir = os.path.abspath(os.path.join(out_dir, "checkpoints"))
+        checkpoint_prefix = os.path.join(checkpoint_dir, "models")
+        if not os.path.exists(checkpoint_dir):
+            os.mkdir(checkpoint_dir)
+        saver = tf.train.Saver(tf.global_variables(), max_to_keep=num_checkpoints)
+        vocab.save(os.path.join(out_dir, "vocab"))
+
+        #初始化所有变量
+        sess.run(tf.global_variables_initializer)
+
+
+        # training step
+        def train_step(x_batch, y_batch):
+            feed_dict = {
+                cnn.input_x:x_batch,
+                cnn.input_y:y_batch,
+                cnn.dropout_keep_prob:dropout_keep_prob
+            }
+            _, step, summaries, loss, accuracy = sess.run([train_op, global_step, train_summary_op, cnn.loss, cnn.accuracy], feed_dict)
+            time_str = datetime.datetime.now().isoformat()
+            print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
+            train_summary_writer.add_summary(summaries, step)
+
+        #testing step
+        def test_step(x_batch, y_batch, writer=None):
+            feed_dict = {
+                cnn.input_x:x_batch,
+                cnn.input_y:y_batch,
+                cnn.dropout_keep_prob:1.0
+            }
+            step, summaries, loss, accuracy = sess.run([global_step, test_summary_op, cnn.loss, cnn.accuracy], feed_dict)
+            time_str = datetime.datetime.now().isoformat()
+            print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
+            if writer:
+                writer.add_summary(summaries, step)
+
+        batches = preprocessing.batch_iter(list(zip(x_train, y_train)), batch_size, num_epochs)
+
+        #进行训练 training loop for every step
+        for batch in batches:
+            x_batch, y_batch = zip(*batch)
+            train_step(x_batch, y_batch)
+            current_step = tf.train.global_step(sess, global_step)  #将Session和global_step
+            #每evaluateevery次进行一次测试
+            if current_step % evaluate_every == 0:
+                print('\nTesting:')
+                test_step(x_test, y_test, writer=test_summary_writer)
+                print("")
+            #每个checkpoint进行一次模型的保存
+            if current_step % checkpoint_every == 0:
+                path = saver.save(sess, './', global_step=current_step)
+                print("Saved model checkpoint to {}\n".format(path))
+                print('finished training and testing')
 
