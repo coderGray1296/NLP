@@ -3,7 +3,7 @@ import numpy as np
 
 def draw_picture(type, accuracy, loss):
     length = len(accuracy)
-    x = np.arange(1, length, 1)
+    x = np.arange(1, length+1, 1)
     plt.subplot(2, 1, 1)
     plt.plot(x, accuracy, "yo-")
     plt.title('accuracy of {}'.format(type))

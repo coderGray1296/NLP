@@ -23,7 +23,7 @@ dropout_keep_prob = 0.5
 l2_reg_lambda = 0.0
 
 batch_size = 32
-num_epochs = 200
+num_epochs = 5
 #Evaluate model on dev set after this many steps (default: 100)
 evaluate_every = 100
 #Save model after this many steps (default: 100)
@@ -155,6 +155,7 @@ with tf.Graph().as_default():
 
         batches = preprocessing.batch_iter(list(zip(x_train, y_train)), batch_size, num_epochs)
 
+        #存储训练集和样本集的loss和accuracy，以供之后的画图
         train_loss_all = []
         train_accuracy_all = []
         test_loss_all = []
@@ -180,7 +181,7 @@ with tf.Graph().as_default():
         #draw picture for loss and accuracy of test and train
         draw.draw_picture('train', train_accuracy_all, train_loss_all)
         draw.draw_picture('test', test_accuracy_all, test_loss_all)
-        
+
         print('modelling finished!')
 
 
