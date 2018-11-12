@@ -6,6 +6,7 @@ import os
 from text_cnn import TextCNN
 import preprocessing
 from tensorflow.contrib import learn
+import draw
 
 #Percentage of the training data to use for validation
 dev_sample_percentage = .1
@@ -136,6 +137,7 @@ with tf.Graph().as_default():
             time_str = datetime.datetime.now().isoformat()
             print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
             train_summary_writer.add_summary(summaries, step)
+            return loss, accuracy
 
         #testing step
         def test_step(x_batch, y_batch, writer=None):
@@ -149,23 +151,37 @@ with tf.Graph().as_default():
             print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
             if writer:
                 writer.add_summary(summaries, step)
+            return loss, accuracy
 
         batches = preprocessing.batch_iter(list(zip(x_train, y_train)), batch_size, num_epochs)
 
+        train_loss_all = []
+        train_accuracy_all = []
+        test_loss_all = []
+        test_accuracy_all = []
         #进行训练 training loop for every step
         for batch in batches:
             x_batch, y_batch = zip(*batch)
-            train_step(x_batch, y_batch)
+            loss_train, accuracy_train = train_step(x_batch, y_batch)
+            train_loss_all.append(loss_train)
+            train_accuracy_all.append(accuracy_train)
             current_step = tf.train.global_step(sess, global_step)  #将Session和global_step
             #每evaluateevery次进行一次测试
             if current_step % evaluate_every == 0:
                 print('\nTesting:')
-                test_step(x_test, y_test, writer=test_summary_writer)
+                loss_test, accuracy_test = test_step(x_test, y_test, writer=test_summary_writer)
+                test_loss_all.append(loss_test)
+                test_accuracy_all.append(accuracy_test)
                 print("")
             #每个checkpoint进行一次模型的保存
             if current_step % checkpoint_every == 0:
                 path = saver.save(sess, './', global_step=current_step)
                 print("Saved model checkpoint to {}\n".format(path))
-                print('model finished')
+        #draw picture for loss and accuracy of test and train
+        draw.draw_picture('train', train_accuracy_all, train_loss_all)
+        draw.draw_picture('test', test_accuracy_all, test_loss_all)
+        
+        print('modelling finished!')
+
 
 
