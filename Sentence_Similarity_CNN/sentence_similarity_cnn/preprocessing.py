@@ -71,41 +71,32 @@ def padding_sentence(s1, s2):
     return s1_padding, s2_padding
 
 
-def get_id(word):
-    if word in sr_word2id:
-        return sr_word2id[word]
-    else:
-        return sr_word2id['<unk>']
-def seq2id(seq):
-    seq = clean_str(seq)
-    seq_split = seq.split(' ')
-    seq_id = map(get_id, seq_split)
-    return seq_id
 
-def read_data_sets(train_dir):
+def read_data_sets(train_dir = 'example.txt'):
     #
     # s1代表数据集的句子1
     # s2代表数据集的句子2
     # score代表相似度
     # sample_num代表数据总共有多少行
     #
+
     df_sick = pd.read_csv(train_dir, sep="\t", usecols=[1, 2, 4], names=['s1', 's2', 'score'],
                           dtype={'s1': object, 's2': object, 'score': object})
+    #delete the first row
     df_sick = df_sick.drop([0])
+
     s1 = df_sick.s1.values
     s2 = df_sick.s2.values
-    score = np.asarray(map(float, df_sick.score.values), dtype=np.float32)
+    score = [float(s) for s in df_sick.score.values]
+    score = np.asarray(score, dtype=np.float32)
     sample_num = len(score)
 
     global sr_word2id, word_embadding
     sr_word2id, word_embadding = build_glove_dic()
 
-    #word2id
-    p = Pool()
-    s1 = np.asarray(p.map(seq2id(s1)))
-    s2 = np.asarray(p.map(seq2id(s2)))
-    p.close()
-    p.join()
+    #word to id
+    s1 = np.array(word2id(s1))
+    s2 = np.array(word2id(s2))
 
     #padding and shuffle
     s1, s2 = padding_sentence(s1, s2)
@@ -116,20 +107,51 @@ def read_data_sets(train_dir):
 
     return s1, s2, score
 
-
+def word2id(s):
+    result = []
+    for ss in s:
+        temp = []
+        ss = clean_str(ss)
+        ss_split = ss.split(' ')
+        for ss_split_s in ss_split:
+            if ss_split_s in sr_word2id:
+                temp.append(sr_word2id[ss_split_s])
+            else:
+                temp.append(0)
+        result.append(temp)
+    return result
 
 def build_glove_dic():
     glove_path = 'glove.6B.50d.txt'
     wv = word2vec.load(glove_path)
-
+    #获取词表
     vocab = wv.vocab
+    #根据词表建立索引
     sr_word2id = pd.Series(range(1, len(vocab)+1), index=vocab)
     sr_word2id['<unk>'] = 0
+    #获取wr对象的所有向量
     word_embadding = wv.vectors
+    #计算每一列的均值
     word_mean = np.mean(word_embadding, axis=0)
+    #将均值向量加在word_embedding上，维度为[40000+1,50]
     word_embadding = np.vstack([word_mean, word_embadding])
-
     return sr_word2id, word_embadding
 
+def batch_iter(data, batch_size, num_epochs, shuffled=True):
+    data = np.array(data)
+    data_length = len(data)
+    num_batchs_per_epoch = int((data_length-1)/batch_size) + 1
+    for epoch in range(num_epochs):
+        if shuffled:
+            index = np.random.permutation(np.arange(data_length))
+            data_shuffled = data[index]
+        else:
+            data_shuffled = data
+        for num_batch in range(num_batchs_per_epoch):
+            start = num_batch * batch_size
+            end = min((num_batch + 1)*batch_size, data_length)
+            yield data_shuffled[start:end]
 
+
+s1, s2, score = read_data_sets('example.txt')
 
