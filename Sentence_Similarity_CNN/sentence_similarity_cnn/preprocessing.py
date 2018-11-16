@@ -153,5 +153,5 @@ def batch_iter(data, batch_size, num_epochs, shuffled=True):
             yield data_shuffled[start:end]
 
 
-s1, s2, score = read_data_sets('example.txt')
+#s1, s2, score = read_data_sets('example.txt')
 
