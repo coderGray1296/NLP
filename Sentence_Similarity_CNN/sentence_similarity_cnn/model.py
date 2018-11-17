@@ -17,6 +17,9 @@ class CNN(object):
 
         self.init_weight()
         self.inference()
+        self.dropout()
+        self.add_output()
+        self.add_acc_loss()
 
     def init_weight(self):
         #Embedding layer
