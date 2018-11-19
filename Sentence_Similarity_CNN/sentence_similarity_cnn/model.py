@@ -17,7 +17,7 @@ class CNN(object):
 
         self.init_weight()
         self.inference()
-        self.dropout()
+        self.dropout() 
         self.add_output()
         self.add_acc_loss()
 
