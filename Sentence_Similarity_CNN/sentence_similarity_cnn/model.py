@@ -40,7 +40,9 @@ class CNN(object):
             with tf.name_scope("conv-maxpool-%s" % filter_size):
                 #concolution layer
                 filter_shape = [filter_size, self.embedding_size, 1, self.num_filters]
+                #将权重初始化为高斯分布的随机值，标准差为0.1
                 W = tf.Variable(tf.truncated_normal(filter_shape, stddev=0.1), name="W")
+                #偏置的长度是输出通道的个数
                 b = tf.Variable(tf.constant(0.1, shape=[self.num_filters]), name="b")
                 conv = tf.nn.conv2d(
                     self.x,
@@ -62,7 +64,9 @@ class CNN(object):
                 pooled_output.append(pooled)
         #combine all the pooled features
         self.num_filters_total = self.num_filters * len(self.filter_sizes)
+        #尺度为[None, 1, 1, num_filters]
         self.h_pool = tf.concat(pooled_output, 3)
+        #尺度为[None, num_filters_total]转化成二维
         self.h_pooled = tf.reshape(self.h_pool, [-1, self.num_filters_total])
 
     def dropout(self):
