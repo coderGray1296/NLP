@@ -25,7 +25,7 @@ class CNN(object):
         #Embedding layer
         _, self.word_embedding = build_glove_dic()
         self.embedding_size = self.word_embedding.shape[1]
-        self.W = tf.get_variable(name="word_embedding", shape=self.embedding_size.shape, dtype=tf.float32, initializer=tf.constant_initializer(self.word_embedding), trainable=True)
+        self.W = tf.get_variable(name="word_embedding", shape=self.word_embedding.shape, dtype=tf.float32, initializer=tf.constant_initializer(self.word_embedding), trainable=True)
         self.s1 = tf.nn.embedding_lookup(self.W, self.input_s1)
         self.s2 = tf.nn.embedding_lookup(self.W, self.input_s2)
         #concat s1 and s2 in a total vector in the second dim [None, sequence_length * 2, embedding_size, input_channel]
@@ -36,7 +36,7 @@ class CNN(object):
     def inference(self):
         #Create convolution layer and maxpool layer for each filter size
         pooled_output = []
-        for i, filter_size in self.filter_sizes:
+        for i, filter_size in enumerate(self.filter_sizes):
             with tf.name_scope("conv-maxpool-%s" % filter_size):
                 #concolution layer
                 filter_shape = [filter_size, self.embedding_size, 1, self.num_filters]
@@ -88,7 +88,7 @@ class CNN(object):
     def add_acc_loss(self):
         #Loss
         with tf.name_scope("loss"):
-            losses = tf.square(self.scores, self.input_y)
+            losses = tf.square(self.scores - self.input_y)
             self.loss = tf.reduce_mean(losses) + self.l2_reg_lambda * self.l2_loss
         #Accuracy
         with tf.name_scope("pearson"):

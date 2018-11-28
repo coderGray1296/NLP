@@ -1,0 +1,6 @@
+model_checkpoint_path: "/Users/codergray/PycharmProjects/Sentence_Similarity_CNN/sentence_similarity_cnn/checkpoints/model-200"
+all_model_checkpoint_paths: "/Users/codergray/PycharmProjects/Sentence_Similarity_CNN/sentence_similarity_cnn/checkpoints/model-180"
+all_model_checkpoint_paths: "/Users/codergray/PycharmProjects/Sentence_Similarity_CNN/sentence_similarity_cnn/checkpoints/model-185"
+all_model_checkpoint_paths: "/Users/codergray/PycharmProjects/Sentence_Similarity_CNN/sentence_similarity_cnn/checkpoints/model-190"
+all_model_checkpoint_paths: "/Users/codergray/PycharmProjects/Sentence_Similarity_CNN/sentence_similarity_cnn/checkpoints/model-195"
+all_model_checkpoint_paths: "/Users/codergray/PycharmProjects/Sentence_Similarity_CNN/sentence_similarity_cnn/checkpoints/model-200"

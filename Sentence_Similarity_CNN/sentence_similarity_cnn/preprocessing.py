@@ -31,7 +31,7 @@ class dataset(object):
             #error prediction
             assert batch_size <= self.examples_nums
         end = self.index_in_epoch
-        return np.array(np.array(self.s1[start:end]), np.array(self.s2[start:end]), np.array(self.label[start:end]))
+        return np.array(self.s1[start:end]), np.array(self.s2[start:end]), np.array(self.label[start:end])
 
 
 def clean_str(string):
@@ -153,5 +153,4 @@ def batch_iter(data, batch_size, num_epochs, shuffled=True):
             yield data_shuffled[start:end]
 
 
-#s1, s2, score = read_data_sets('example.txt')
 
