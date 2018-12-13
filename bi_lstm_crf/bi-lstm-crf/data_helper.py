@@ -99,7 +99,7 @@ def random_embedding(vocab, embedding_dim):
         :param embedding_dim:
         :return:
     """
-    #random parameters in gaosifenbu
+    #random parameters in gaosi fenbu
     embedding_mat = np.random.uniform(-0.25, 0.25, (len(vocab), embedding_dim))
     embedding_mat = np.float32(embedding_mat)
     return embedding_mat
