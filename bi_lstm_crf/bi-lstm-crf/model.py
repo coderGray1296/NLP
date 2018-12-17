@@ -6,6 +6,8 @@ from tensorflow.contrib.crf import crf_log_likelihood
 from tensorflow.contrib.crf import viterbi_decode
 from data_helper import pad_sequences, batch_yield
 from preprocessing import get_logger
+from eval import conlleval
+
 
 class BILSTM_CRF(object):
     def __init__(self, args, embeddings, tag2label, vocab, paths, config):
