@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys, pickle, os, random
+import json
 
 ## tags, BIO
 tag2label = {"O": 0,
@@ -18,10 +19,11 @@ def read_corpus(corpus_path):
     data = []
     with open(corpus_path, encoding='utf-8') as fr:
         lines = fr.readlines()
+        print(lines)
     sent_, tag_ = [], []
     for line in lines:
         if line != '\n':
-            [char, label] = line.strip().split()
+            [char, label] = line.strip().split('\t')
             sent_.append(char)
             tag_.append(label)
         else:
@@ -31,6 +33,7 @@ def read_corpus(corpus_path):
 
 def vocab_build(vocab_path, corpus_path, min_count):
     data = read_corpus(corpus_path)
+    print(data)
     #word2id shape is word2id[word] = [number in vacab, count in corpus]
     word2id = {}
     for sent_, tag_ in data:
@@ -52,7 +55,7 @@ def vocab_build(vocab_path, corpus_path, min_count):
     # delete word in low_freq_words
     for word in low_freq_words:
         del word2id[word]
-
+    #重新写入word2id，只保留wordid
     new_id = 1
     for word in word2id.keys():
         word2id[word] = new_id
@@ -60,9 +63,9 @@ def vocab_build(vocab_path, corpus_path, min_count):
     word2id['<UNK>'] = new_id
     word2id['<PAD>'] = 0
 
-    print(len(word2id))
-    with open(vocab_path, 'wb') as fw:
-        pickle.dump(word2id, fw)
+    print(word2id)
+    with open(vocab_path, 'w') as fw:
+        json.dump(word2id, fw, ensure_ascii=False)
 
 # turn sentence(list) to id(list) seeking from word2id(dict)
 def sentence2id(sent, word2id):
@@ -144,3 +147,5 @@ def batch_yield(data, batch_size, vocab, tag2label, shuffle=False):
     if len(seqs) != 0:
         yield seqs, labels
 
+
+vocab_build('./data/vocab.json','./data/test.txt',0)
