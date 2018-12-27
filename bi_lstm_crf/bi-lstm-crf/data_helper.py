@@ -33,7 +33,7 @@ def read_corpus(corpus_path):
 
 def vocab_build(vocab_path, corpus_path, min_count):
     data = read_corpus(corpus_path)
-    print(data)
+    #print(data)
     #word2id shape is word2id[word] = [number in vacab, count in corpus]
     word2id = {}
     for sent_, tag_ in data:
@@ -63,7 +63,7 @@ def vocab_build(vocab_path, corpus_path, min_count):
     word2id['<UNK>'] = new_id
     word2id['<PAD>'] = 0
 
-    print(word2id)
+    print('字典长度为：'+ str(len(word2id)))
     with open(vocab_path, 'w') as fw:
         json.dump(word2id, fw, ensure_ascii=False)
 
@@ -91,8 +91,8 @@ def read_dictionary(vocab_path):
         :return:
     """
     vocab_path = os.path.join(vocab_path)
-    with open(vocab_path, 'rb') as fr:
-        word2id = pickle.load(fr)
+    with open(vocab_path, 'r') as fr:
+        word2id = json.load(fr)
     print('vocab_size:', len(word2id))
     return word2id
 
@@ -102,7 +102,6 @@ def random_embedding(vocab, embedding_dim):
         :param embedding_dim:
         :return:
     """
-    #random parameters in gaosi fenbu
     embedding_mat = np.random.uniform(-0.25, 0.25, (len(vocab), embedding_dim))
     embedding_mat = np.float32(embedding_mat)
     return embedding_mat
@@ -148,4 +147,7 @@ def batch_yield(data, batch_size, vocab, tag2label, shuffle=False):
         yield seqs, labels
 
 
-vocab_build('./data/vocab.json','./data/test.txt',0)
+#vocab_build('./data/vocab.json','./data/test.txt',0)
+word2id = read_dictionary('./data/vocab.json')
+word_embedding = random_embedding(word2id, 10)
+print(word_embedding)
