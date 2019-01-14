@@ -105,7 +105,7 @@ def random_embedding(vocab, embedding_dim):
     embedding_mat = np.random.uniform(-0.25, 0.25, (len(vocab), embedding_dim))
     embedding_mat = np.float32(embedding_mat)
     return embedding_mat
-
+#给seq进行0填充，返回填充后的seqs和原seqs的长度list
 def pad_sequences(sequences, pad_mark=0):
     """
         :param sequences:

@@ -34,8 +34,10 @@ class BILSTM_CRF(object):
     def build_graph(self):
         self.add_placeholders()
         self.lookup_layer_op()
+        #运行时观察纬度问题
         self.biLSTM_layer_op()
         self.softmax_pred_op()
+        #shape问题
         self.loss_op()
         self.trainstep_op()
         self.init_op()
@@ -68,6 +70,7 @@ class BILSTM_CRF(object):
             #将两个方向的输出进行拼接
             output = tf.concat([out_fw_seq, out_bw_seq], axis=-1)
             output = tf.nn.dropout(output, self.dropout_pl)
+            #print(output.shape)
 
         with tf.variable_scope("proj"):
             W = tf.get_variable(

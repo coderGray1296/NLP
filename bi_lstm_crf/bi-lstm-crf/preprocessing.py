@@ -94,3 +94,4 @@ def get_logger(filename):
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s: %(message)s'))
     logging.getLogger().addHandler(handler)
     return logger
+
