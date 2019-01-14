@@ -38,10 +38,11 @@
       <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bi-lstm-crf/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="211" column="0" lean-forward="true" selection-start-line="211" selection-start-column="0" selection-end-line="211" selection-end-column="0" />
+            <state relative-caret-position="441">
+              <caret line="195" column="36" lean-forward="true" selection-start-line="195" selection-start-column="36" selection-end-line="195" selection-end-column="36" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#9188#9809#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -81,8 +82,9 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>pad_sequences</find>
-      <find>sequence_lengths</find>
       <find>batch_yield</find>
+      <find>word_ids</find>
+      <find>sequence_lengths</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -92,8 +94,8 @@
         <option value="$PROJECT_DIR$/bi-lstm-crf/train.py" />
         <option value="$PROJECT_DIR$/bi-lstm-crf/data/test.txt" />
         <option value="$PROJECT_DIR$/bi-lstm-crf/preprocessing.py" />
-        <option value="$PROJECT_DIR$/bi-lstm-crf/model.py" />
         <option value="$PROJECT_DIR$/bi-lstm-crf/data_helper.py" />
+        <option value="$PROJECT_DIR$/bi-lstm-crf/model.py" />
       </list>
     </option>
   </component>
@@ -344,6 +346,7 @@
           <caret line="57" column="42" lean-forward="true" selection-start-line="57" selection-start-column="42" selection-end-line="57" selection-end-column="42" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#9188#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -374,6 +377,7 @@
           <caret line="252" column="13" lean-forward="false" selection-start-line="252" selection-start-column="13" selection-end-line="252" selection-end-column="13" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#9188#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -422,6 +426,7 @@
           <caret line="274" column="34" lean-forward="true" selection-start-line="274" selection-start-column="34" selection-end-line="274" selection-end-column="34" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#9188#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -568,10 +573,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bi-lstm-crf/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="211" column="0" lean-forward="true" selection-start-line="211" selection-start-column="0" selection-end-line="211" selection-end-column="0" />
+        <state relative-caret-position="441">
+          <caret line="195" column="36" lean-forward="true" selection-start-line="195" selection-start-column="36" selection-end-line="195" selection-end-column="36" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#9188#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>

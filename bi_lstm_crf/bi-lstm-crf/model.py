@@ -136,7 +136,11 @@ class BILSTM_CRF(object):
         """
         self.merged = tf.summary.merge_all()
         self.file_writer = tf.summary.FileWriter(self.summary_path, sess.graph)
-
+    '''
+    
+    **以上完成了建模的函数实现，下面编写训练及测试相应函数**
+    
+    '''
     def train(self, train, dev):
         """
         :param train:
