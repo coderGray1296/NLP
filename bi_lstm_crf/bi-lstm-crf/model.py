@@ -269,6 +269,7 @@ class BILSTM_CRF(object):
         :param epoch:
         :return:
         """
+        #将label重新映射成tag
         label2tag = {}
         for tag, label in self.tag2label.items():
             label2tag[label] = tag if label != 0 else label

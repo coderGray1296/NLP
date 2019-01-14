@@ -14,7 +14,7 @@
       <file leaf-file-name="data_helper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bi-lstm-crf/data_helper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
+            <state relative-caret-position="3103">
               <caret line="107" column="34" lean-forward="true" selection-start-line="107" selection-start-column="34" selection-end-line="107" selection-end-column="34" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -38,11 +38,14 @@
       <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bi-lstm-crf/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="195" column="36" lean-forward="true" selection-start-line="195" selection-start-column="36" selection-end-line="195" selection-end-column="36" />
+            <state relative-caret-position="496">
+              <caret line="117" column="10" lean-forward="false" selection-start-line="117" selection-start-column="10" selection-end-line="117" selection-end-column="10" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#7656#9107#0" expanded="false" />
                 <element signature="e#9188#9809#0" expanded="false" />
+                <element signature="e#9859#10286#0" expanded="false" />
+                <element signature="e#10341#11108#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -51,7 +54,7 @@
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bi-lstm-crf/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1537">
+            <state relative-caret-position="-1080">
               <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -63,8 +66,8 @@
       <file leaf-file-name="eval.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bi-lstm-crf/eval.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+            <state relative-caret-position="116">
+              <caret line="4" column="25" lean-forward="true" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -85,6 +88,9 @@
       <find>batch_yield</find>
       <find>word_ids</find>
       <find>sequence_lengths</find>
+      <find>labels_softmax_</find>
+      <find>loss</find>
+      <find>demo_one</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -346,7 +352,10 @@
           <caret line="57" column="42" lean-forward="true" selection-start-line="57" selection-start-column="42" selection-end-line="57" selection-end-column="42" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#7656#9107#0" expanded="false" />
             <element signature="e#9188#9809#0" expanded="false" />
+            <element signature="e#9859#10286#0" expanded="false" />
+            <element signature="e#10341#11108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -377,7 +386,10 @@
           <caret line="252" column="13" lean-forward="false" selection-start-line="252" selection-start-column="13" selection-end-line="252" selection-end-column="13" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#7656#9107#0" expanded="false" />
             <element signature="e#9188#9809#0" expanded="false" />
+            <element signature="e#9859#10286#0" expanded="false" />
+            <element signature="e#10341#11108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -426,7 +438,10 @@
           <caret line="274" column="34" lean-forward="true" selection-start-line="274" selection-start-column="34" selection-end-line="274" selection-end-column="34" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#7656#9107#0" expanded="false" />
             <element signature="e#9188#9809#0" expanded="false" />
+            <element signature="e#9859#10286#0" expanded="false" />
+            <element signature="e#10341#11108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -533,24 +548,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bi-lstm-crf/eval.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bi-lstm-crf/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1537">
-          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bi-lstm-crf/preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-805">
@@ -563,7 +560,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bi-lstm-crf/data_helper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
+        <state relative-caret-position="3103">
           <caret line="107" column="34" lean-forward="true" selection-start-line="107" selection-start-column="34" selection-end-line="107" selection-end-column="34" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -571,13 +568,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bi-lstm-crf/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1080">
+          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bi-lstm-crf/eval.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="4" column="25" lean-forward="true" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bi-lstm-crf/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="195" column="36" lean-forward="true" selection-start-line="195" selection-start-column="36" selection-end-line="195" selection-end-column="36" />
+        <state relative-caret-position="496">
+          <caret line="117" column="10" lean-forward="false" selection-start-line="117" selection-start-column="10" selection-end-line="117" selection-end-column="10" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#7656#9107#0" expanded="false" />
             <element signature="e#9188#9809#0" expanded="false" />
+            <element signature="e#9859#10286#0" expanded="false" />
+            <element signature="e#10341#11108#0" expanded="false" />
           </folding>
         </state>
       </provider>
