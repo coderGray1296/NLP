@@ -235,6 +235,7 @@ class BILSTM_CRF(object):
         label_list, seq_len_list = [], []
         for seqs, labels in batch_yield(dev, self.batch_size, self.vocab, self.tag2label, shuffle=False):
             label_list_, seq_len_list_ = self.predict_one_batch(sess, seqs)
+            #对于label_list的纬度问题
             label_list.extend(label_list_)
             seq_len_list.extend(seq_len_list_)
         return label_list, seq_len_list

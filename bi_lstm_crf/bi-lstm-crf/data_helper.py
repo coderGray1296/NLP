@@ -4,6 +4,7 @@ import sys, pickle, os, random
 import json
 
 ## tags, BIO
+#tag : label
 tag2label = {"O": 0,
              "B-PER": 1, "I-PER": 2,
              "B-LOC": 3, "I-LOC": 4,
