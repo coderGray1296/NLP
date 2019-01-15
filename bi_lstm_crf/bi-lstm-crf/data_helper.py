@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys, pickle, os, random
-import json
+import pickle
 
 ## tags, BIO
 #tag : label
@@ -64,10 +64,6 @@ def vocab_build(vocab_path, corpus_path, min_count):
     word2id['<UNK>'] = new_id
     word2id['<PAD>'] = 0
 
-    print('字典长度为：'+ str(len(word2id)))
-    with open(vocab_path, 'w') as fw:
-        json.dump(word2id, fw, ensure_ascii=False)
-
 # turn sentence(list) to id(list) seeking from word2id(dict)
 def sentence2id(sent, word2id):
     """
@@ -92,8 +88,8 @@ def read_dictionary(vocab_path):
         :return:
     """
     vocab_path = os.path.join(vocab_path)
-    with open(vocab_path, 'r') as fr:
-        word2id = json.load(fr)
+    with open(vocab_path, 'rb') as fr:
+        word2id = pickle.load(fr, encoding='utf-8')
     print('vocab_size:', len(word2id))
     return word2id
 
@@ -149,6 +145,6 @@ def batch_yield(data, batch_size, vocab, tag2label, shuffle=False):
 
 
 #vocab_build('./data/vocab.json','./data/test.txt',0)
-word2id = read_dictionary('./data/vocab.json')
-word_embedding = random_embedding(word2id, 10)
-print(word_embedding)
+#word2id = read_dictionary('./data/vocab.json')
+#word_embedding = random_embedding(word2id, 10)
+#print(word_embedding)

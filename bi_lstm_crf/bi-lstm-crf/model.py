@@ -86,6 +86,8 @@ class BILSTM_CRF(object):
                 dtype=tf.float32
             )
             s = tf.shape(output)
+            print('this is s:::\n')
+            print(s)
             output = tf.reshape(output, [-1, 2 * self.hidden_dim])
             pred = tf.matmul(output, W) + b
             self.logits = tf.reshape(pred, [-1, s[1], self.num_tags])

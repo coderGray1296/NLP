@@ -33,10 +33,13 @@ parser.add_argument('--shuffle', type=str2bool, default=True, help='shuffle trai
 parser.add_argument('--mode', type=str, default='demo', help='train/test/demo')
 parser.add_argument('--demo_model', type=str, default='1521112368', help='model for test and demo')
 args = parser.parse_args()
-
+args.mode = 'train'
 
 ## get char embeddings
+
+#加载词典
 word2id = read_dictionary(os.path.join('.', args.train_data, 'word2id.pkl'))
+#进行随机embedding或适用预训练的embedding
 if args.pretrain_embedding == 'random':
     embeddings = random_embedding(word2id, args.embedding_dim)
 else:
