@@ -34,10 +34,8 @@ class BILSTM_CRF(object):
     def build_graph(self):
         self.add_placeholders()
         self.lookup_layer_op()
-        #运行时观察纬度问题
         self.biLSTM_layer_op()
         self.softmax_pred_op()
-        #shape问题
         self.loss_op()
         self.trainstep_op()
         self.init_op()
@@ -55,6 +53,7 @@ class BILSTM_CRF(object):
             _word_embeddings = tf.Variable(self.embeddings, dtype=tf.float32, trainable=self.update_embedding, name="_word_embeddings")
             word_embeddings = tf.nn.embedding_lookup(params=_word_embeddings, ids=self.word_ids, name="word_embeddings")
         self.word_embeddings = tf.nn.dropout(word_embeddings, self.dropout_pl)
+        #self.word_embeddings.shape=[batch_size, max_sequence_length, embedding_size]
 
     def biLSTM_layer_op(self):
         with tf.variable_scope("bi-lstm"):
@@ -86,11 +85,12 @@ class BILSTM_CRF(object):
                 dtype=tf.float32
             )
             s = tf.shape(output)
-            print('this is s:::\n')
-            print(s)
+            #s.shape=[batch_size, max_sequence_length, 300*2]
+            #reshape是为了进行矩阵运算
             output = tf.reshape(output, [-1, 2 * self.hidden_dim])
             pred = tf.matmul(output, W) + b
             self.logits = tf.reshape(pred, [-1, s[1], self.num_tags])
+            #shape=[batch_size, max_sequence_length, 7]
     def loss_op(self):
         if self.CRF:
             log_likelihood, self.transition_params = crf_log_likelihood(inputs=self.logits,
@@ -99,6 +99,7 @@ class BILSTM_CRF(object):
             self.loss = -tf.reduce_mean(log_likelihood)
         else:
             losses = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.labels)
+            #只计算填充之前的实际句子长度的loss值，不计算0填充的loss值
             mask = tf.sequence_mask(self.sequence_lengths)
             losses = tf.boolean_mask(losses, mask)
             self.loss = tf.reduce_mean(losses)

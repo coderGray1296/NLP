@@ -20,7 +20,6 @@ def read_corpus(corpus_path):
     data = []
     with open(corpus_path, encoding='utf-8') as fr:
         lines = fr.readlines()
-        print(lines)
     sent_, tag_ = [], []
     for line in lines:
         if line != '\n':
