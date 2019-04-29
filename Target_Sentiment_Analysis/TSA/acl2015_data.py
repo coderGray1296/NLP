@@ -363,30 +363,30 @@ class Data():
         self.term_label_size = len(reverse_seq_label_dict)
         self.window_size = window_size
 
-        train_char = char2idx(train_char, self.char_dict)
-        test_char = char2idx(test_char, self.char_dict)
+        train_char = util.char2idx(train_char, self.char_dict)
+        test_char = util.char2idx(test_char, self.char_dict)
 
-        train_text = word2idx(train_text, self.word_dict)
-        test_text = word2idx(test_text, self.word_dict)
+        train_text = util.word2idx(train_text, self.word_dict)
+        test_text = util.word2idx(test_text, self.word_dict)
 
-        train_text, train_seq_len, train_mask = padding(train_text, max_len)
-        test_text, test_seq_len, test_mask = padding(test_text, max_len)
-        train_context = context_window(np.asarray(train_text), self.window_size)
-        test_context = context_window(np.asarray(test_text), self.window_size)
+        train_text, train_seq_len, train_mask = util.padding(train_text, max_len)
+        test_text, test_seq_len, test_mask = util.padding(test_text, max_len)
+        train_context = util.context_window(np.asarray(train_text), self.window_size)
+        test_context = util.context_window(np.asarray(test_text), self.window_size)
 
-        train_char, train_char_len = char_padding(train_char, max_len, max_char_len)
-        test_char, test_char_len = char_padding(test_char, max_len, max_char_len)
+        train_char, train_char_len = util.char_padding(train_char, max_len, max_char_len)
+        test_char, test_char_len = util.char_padding(test_char, max_len, max_char_len)
 
-        train_seq_label, _, _ = padding(train_seq_label, max_len)
-        test_seq_label, _, _ = padding(test_seq_label, max_len)
+        train_seq_label, _, _ = util.padding(train_seq_label, max_len)
+        test_seq_label, _, _ = util.padding(test_seq_label, max_len)
 
-        train_seq_senti, _, _ = padding(train_seq_senti, max_len)
-        test_seq_senti, _, _ = padding(test_seq_senti, max_len)
+        train_seq_senti, _, _ = util.padding(train_seq_senti, max_len)
+        test_seq_senti, _, _ = util.padding(test_seq_senti, max_len)
 
-        train_pos = word2idx(train_pos, self.pos_dict)
-        test_pos = word2idx(test_pos, self.pos_dict)
-        train_pos, _, _ = padding(train_pos, max_len)
-        test_pos, _, _ = padding(test_pos, max_len)
+        train_pos = util.word2idx(train_pos, self.pos_dict)
+        test_pos = util.word2idx(test_pos, self.pos_dict)
+        train_pos, _, _ = util.padding(train_pos, max_len)
+        test_pos, _, _ = util.padding(test_pos, max_len)
 
         self.train_pos = np.asarray(train_pos[:]).astype('int32')
         self.train_text = np.asarray(train_text[:]).astype('int32')
