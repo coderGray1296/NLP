@@ -62,7 +62,7 @@ senti_BI_dict = {1: 2,
                  3: 4,
                  5: 6}
 
-
+#类似于senti_BI_dict
 def match(d):
     for k in d:
         begin = k.split('-')
@@ -313,10 +313,10 @@ class Data():
         tmp_train_char = reduce(lambda x1, x2: x1 + x2, [x for x in train_char])
 
         self.char_dict = util.get_char_dict(tmp_train_char)
-        self.word_dict = get_dict(train_text)
-        self.pos_dict = get_dict(train_pos)
+        self.word_dict = util.get_dict(train_text)
+        self.pos_dict = util.get_dict(train_pos)
         self.seq_label_dict = 5  # 0~4 for O, B-person, I-Person, B-organization, I-organization
-        self.senti_label_size = 7  # 0~3 for None, B_Negative,I_Negative, B_Neutral, I_Neutral B_Positive , I_Positive
+        self.senti_label_size = 7  # 0~6 for None, B_Negative,I_Negative, B_Neutral, I_Neutral B_Positive , I_Positive
         print(' seq label size: {}'.format(self.seq_label_dict))
 
         word2vec_path = '~/glove/GoogleNews-vectors-negative300.bin'

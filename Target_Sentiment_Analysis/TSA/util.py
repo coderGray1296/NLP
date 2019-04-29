@@ -1,7 +1,7 @@
 # encoding=utf-8
 import numpy as np
 
-
+#字典，每个字对应一个序号标签，递增
 def get_dict(text):
     word_dict = {}
     word_dict['PADDING'] = 0
@@ -26,7 +26,7 @@ def get_char_dict(text):
                 word_dict[c] = len(word_dict)
     return word_dict
 
-
+#黑白盒，碰到没遇到的再加到word_dict中，data是多个句子，返回结果为2维list
 def word2idx(data, word_dict):
     result = []
     for d in data:
@@ -57,7 +57,7 @@ def char2idx(data, char_dict):
         result.append(idx_list)
     return result
 
-
+#填充
 def padding(data, max_len):
     result = []
     seq_len = []
