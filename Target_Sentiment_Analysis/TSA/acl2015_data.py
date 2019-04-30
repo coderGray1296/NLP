@@ -130,6 +130,10 @@ def read_file(name):
                         exit(0)
                     sentiment_list = sentiment_list + senti
                     index = tmp_index
+            #print('idx:')
+            #print(idx_seq_label)
+            #print('sentiment')
+            #print(sentiment_list)
             pos = [x[1] for x in nltk.pos_tag(twitter.split())]
             # print(twitter)
             # print(pos)
@@ -156,7 +160,7 @@ def read_file(name):
         seq_label += line[1] + ' '
         sentiment += line[2] + ' '
     f.close()
-    print(sentiment_dict)
+    #print(sentiment_dict)
     return data
 
 
@@ -452,6 +456,7 @@ class Data():
         self.text_dict_reverse = {}
         for k in self.word_dict:
             self.text_dict_reverse[self.word_dict[k]] = k
+
 
     def reverse(self, data, d):
         return [d[d_] for d_ in data]

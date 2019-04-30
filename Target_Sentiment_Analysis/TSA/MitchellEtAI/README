@@ -1,0 +1,32 @@
+The basic idea is to take data as formatted in the 10-fold directory, train models, then test.
+The learning process is quite compute-intensive, and so I recommend submitting this to a cluster.
+As-is, all calls to "qsub" are my own calls to a Sun Grid engine; you will probably want to change for your system.
+
+./run_EMNLP-camera.sh [en|es] train
+    - Takes data formatted in the 10-fold directory, annotates it, and makes training/testing files for ERMA.
+    - Also writes out a shell script in the 'qsub' directory of the language to launch ERMA training.
+
+./run_EMNLP-camera.sh [en|es] pipeline_sent
+    - Takes output of the NE predictions and begins training the sentiment model in pipeline fashion.
+
+./run_EMNLP-camera.sh [en|es] combine_pipe
+    - Combines the pipelined data into one file.
+
+./run_EMNLP-camera.sh [en|es] compute_results
+    - Computes results.
+
+./run_EMNLP-camera.sh [en|es] print_results
+
+
+
+### --- Most important files --- ###
+./erma-src.jar
+    - Erma toolkit
+./add_features.sh
+    - Adds basic features, calling the Jerboa tokenizer and sentiment lexicons.
+./scripts/ConllToErma.py
+    - Main model-building script.  Calls to everything else to get fine-grained features.
+./[en|es]/feature_files/
+    - Manual features used by ./scripts/ConllToErma.py
+./[en|es]/*SentimentLexicons/
+    - Sentiment lexicons for the various languages.

@@ -1,3 +1,2 @@
-a = ['a','b','c']
-b = ['d','f']
-print(a+b)
+import nltk
+nltk.download('averaged_perceptron_tagger')
