@@ -1,17 +1,12 @@
-#Syntax Grammar and dependency parsing
-###语言结构(Linguistic structure)
-两种分析语言结构的方法
-- Constituency(成分) === phrase structure grammar(短语结构语法) === context-free grammars(CFGs)上下文无关文法 
-- Dependency structure(依存句法结构)：通过找到句子中的每个词所依赖的部分，来分析句子的结构。（修饰词或是其他词等）。依存句法可以通过划线来指向依赖的部分，例如下图：
-![avatar](https://github.com/coderGray1296/NLP/blob/master/cs224n/pictures/4.1.png)通常称为treebanks。
-同时，利用依赖文法还能够区分语义模糊性，多数是以依存结构来看什么修饰什么的问题，例如下面的例子：
-![avatar](https://github.com/coderGray1296/NLP/blob/master/cs224n/pictures/4.2.png)
-from space 可以修饰study，也可以修饰whales，这就造成了语义模糊。
-###annotated treebank(标注树)
-建立一个标注树效率很低而且用处小于建立一个语法结构。不过标注树还是有很多优点的。例如
-- 它可以被重复使用。一般来说每个人对于语法规则的理解不同，会产生不同的语法规则。但是标注树可以重复使用，同时还能够衍生出许多资源用于NLP，也是对于语言学很有用的资源。
-- 依存树库使用了真实的覆盖面广的数据。
-- 用来评估系统或者工具的一种重要方法。
+#RNN and language model
+###传统语言模型
+传统的语言模型通常是基于一个窗口值，在窗口值的基础上来预测下一个位置的概率，即：满足马尔可夫假设。而先验概率是根据共现频率来决定的，因此如果窗口的值越大，需要计算的步骤就成指数型增长，对于内存有很大的压力，因此目前来说**Recurrent Neural Network**成为了主流模型。
+###递归神经网络语言模型
+与传统语言模型的不同的是，递归神经网络考虑了当前预测位置之前的所有信息，通过隐状态来传递这个信息，但是又不需要每次都进行计算整体，因此计算量相比传统的语言模型小得多。
+![avatar](https://github.com/coderGray1296/NLP/blob/master/cs224n/pictures/5.1.png)
+![avatar](https://github.com/coderGray1296/NLP/blob/master/cs224n/pictures/5.2.png)
+
+
 
 ###依存语法和依存结构
 过去的10年间，依存分析逐渐代替了依存语法结构，因为后者被发现是一种通过构建语义表征来理解语法结构的合适框架。
