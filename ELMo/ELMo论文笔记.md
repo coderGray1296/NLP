@@ -10,9 +10,9 @@
 
 ##### ELMo
 ELMo是双向语言模型内层表示的一种特殊的组合方式。对于每一个标记，一个L层的biLM计算了2L+1个表示的集合。
-![avatar]()
+![avatar](https://github.com/coderGray1296/NLP/blob/master/ELMo/pictures/1.png)
 我们计算一个任务的特殊权重通过所有biLM的层：
-![avatar]()
+![avatar](https://github.com/coderGray1296/NLP/blob/master/ELMo/pictures/2.png)
 考虑到每个biLM层具有不同的分布，在某种情况下，这还有助于每层**layer normalization**在计算权重之前。
 
 ##### 使用biLMs完成监督的NLP任务
