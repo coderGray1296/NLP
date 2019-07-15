@@ -284,4 +284,32 @@ instance = TrainingInstance(
             masked_lm_positions=masked_lm_positions,
             masked_lm_labels=masked_lm_labels)
 ```
+1. 一个instance包含一个tlkens，实际上就是一个输入的词序列，该序列的表现形式为：
+```
+[CLS]A[SEP]B[SEP]
+A=[token_0,token-1, ...,token_i]
+B=[token_i+1,token_i+2, ...,token_n-1]
+其中:
+2<= n < max_seq_length - 3 (in short_seq_prob)
+n=max_seq_length - 3 (in 1-short_seq_prob)
+```
+token最后的表现形式如下面所示：
+```
+Input = [CLS] the man went to [MASK] store [SEP] he bought a gallon [MASK] milk [SEP]
+Label = IsNext
+
+Input = [CLS] the man [MASK] to the store [SEP] penguin [MASK] are flight **less birds [SEP]
+Label = NotNext
+```
+- segment_ids指的形式为[0,0,0...1,1,1,1]其中0的个数为i+1歌，1的个数为max_seq_length-(i+1)，对应到模型输入就是token_type
+- is_random_next：其实就是上面的Label，0.5的概率为True(和当只有一个segment的时候)，如果为True则B和A不属于同一个document。剩下的情况为False，则B为A同一个document的后续句子。
+- masked_lm_positions；序列里被[MASK]的位置
+- masked_lm_labels：序列里被[MASK]的token
+2. 在create_masked_lm_predictions函数里，一个序列在指定MASK数量后，有80%被真正MASK，10%还是保留原来的token，10%被随机替换成其他的token。
+
+##### 保存instance
+
+
+
+
 
