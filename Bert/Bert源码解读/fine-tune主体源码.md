@@ -314,3 +314,218 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     return (loss, per_example_loss, logits, probabilities)
 ```
 这里的模型输出取的是pooled_output，之前讲过pooled_output是模型最后一层的第一个片段。之后再用一个全连接层+softmax和lables的one_hot计算loss。
+### run_squad.py
+run_squad是基于SQuAD数据进行阅读理解任务的fine-tune，除了X/Y的转换，loss的构建和其他的数据格式都和run_classifier是一样的，下面重点写着两块。
+##### X/Y数据的转换
+```
+class SquadExample(object):
+  def __init__(self,
+               qas_id,
+               question_text,
+               doc_tokens,
+               orig_answer_text=None,
+               start_position=None,
+               end_position=None,
+               is_impossible=False):
+    self.qas_id = qas_id
+    self.question_text = question_text 
+    self.doc_tokens = doc_tokens 
+    self.orig_answer_text = orig_answer_text 
+    self.start_position = start_position
+    self.end_position = end_position
+    self.is_impossible = is_impossible
+```
+qas_id 样本ID，question_text问题文本，doc_tokens阅读材料[word0, word1, ...]的形式，orig_answer_text 原始答案的文本，start_position答案在文本中开始的位置，end_position答案在文本中结束的位置，is_impossible在SQuAD2里才会用到的字段这里可以不用关心。
+```
+class InputFeatures(object):
+  """A single set of features of data."""
+
+  def __init__(self,
+               unique_id,
+               example_index,
+               doc_span_index,
+               tokens,
+               token_to_orig_map,
+               token_is_max_context,
+               input_ids,
+               input_mask,
+               segment_ids,
+               start_position=None,
+               end_position=None,
+               is_impossible=None):
+    self.unique_id = unique_id
+    self.example_index = example_index
+    self.doc_span_index = doc_span_index
+    self.tokens = tokens
+    self.token_to_orig_map = token_to_orig_map
+    self.token_is_max_context = token_is_max_context
+    self.input_ids = input_ids
+    self.input_mask = input_mask
+    self.segment_ids = segment_ids
+    self.start_position = start_position
+    self.end_position = end_position
+    self.is_impossible = is_impossible
+```
+- unique_id feature的唯一id，example_index样本的索引，用于建立feature和example的对应
+- tokens该样本的token序列，token_to_orig_map是tokens里面每一个token在原始doc_token的索引；
+- doc_span_index该feature在doc_span的索引，如果一个文本很长，那么势必需要对其进行截取，截取成若干片段装进doc_span，doc_span里的各个片段会装进各个feature里面，所以一个feature对应的就会有一个doc_span_index；
+- token_is_max_context是一个序列，里面的值表示该位置的token在当前span里面是否是最全上下文的。
+
+例如bought这个词
+```
+Doc: the man went to the store and bought a gallon of milk
+Span A: the man went to the
+Span B: to the store and bought
+Span C: and bought a gallon of
+```
+bought在spanB和spanC里都有出现，但很显然span C里bought是语境最全的，既有上文也有下文
+- input_ids 是tokens转化为token id作为模型的输入，input_mask 、segment_ids、is_impossible 不用多说了；
+- start_position 、 end_position为答案在当前tokens序列里面的位置（跟上面的不同，不是整个context里面的位置），需要注意的是如果答案不在当前span里的话，start_position 、 end_position均为0。
+- SquadExample到InputFeatures转换的过程也是类似的，不用细讲，与run_classifier唯一不同的是classifier的输入是[CLS]句子a[SEP]句子b[SEP], 而squad是[CLS]问题[SEP]阅读材料片段[SEP]。
+
+```
+input_ids = features["input_ids"]
+input_mask = features["input_mask"]
+segment_ids = features["segment_ids"]
+```
+**这三个元素作为模型的输入X，而start_position和end_position作为Y，如果知道了Y就等于知道了答案的位置，然后反向在阅读材料context里面去找出来就可以了，逻辑大概就是这样。**
+##### loss构建
+```
+def model_fn_builder(bert_config, init_checkpoint, learning_rate,
+                     num_train_steps, num_warmup_steps, use_tpu,
+                     use_one_hot_embeddings):
+  """Returns `model_fn` closure for TPUEstimator."""
+
+  def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
+    """The `model_fn` for TPUEstimator."""
+
+    tf.logging.info("*** Features ***")
+    for name in sorted(features.keys()):
+      tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+
+    unique_ids = features["unique_ids"]
+    input_ids = features["input_ids"]
+    input_mask = features["input_mask"]
+    segment_ids = features["segment_ids"]
+
+    is_training = (mode == tf.estimator.ModeKeys.TRAIN)
+
+    (start_logits, end_logits) = create_model(
+        bert_config=bert_config,
+        is_training=is_training,
+        input_ids=input_ids,
+        input_mask=input_mask,
+        segment_ids=segment_ids,
+        use_one_hot_embeddings=use_one_hot_embeddings)
+
+    tvars = tf.trainable_variables()
+
+    initialized_variable_names = {}
+    scaffold_fn = None
+    if init_checkpoint:
+      (assignment_map, initialized_variable_names
+      ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
+      if use_tpu:
+
+        def tpu_scaffold():
+          tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+          return tf.train.Scaffold()
+
+        scaffold_fn = tpu_scaffold
+      else:
+        tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+
+    tf.logging.info("**** Trainable Variables ****")
+    for var in tvars:
+      init_string = ""
+      if var.name in initialized_variable_names:
+        init_string = ", *INIT_FROM_CKPT*"
+      tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
+                      init_string)
+
+    output_spec = None
+    if mode == tf.estimator.ModeKeys.TRAIN:
+      seq_length = modeling.get_shape_list(input_ids)[1]
+
+      def compute_loss(logits, positions):
+        one_hot_positions = tf.one_hot(
+            positions, depth=seq_length, dtype=tf.float32)
+        log_probs = tf.nn.log_softmax(logits, axis=-1)
+        loss = -tf.reduce_mean(
+            tf.reduce_sum(one_hot_positions * log_probs, axis=-1))
+        return loss
+
+      start_positions = features["start_positions"]
+      end_positions = features["end_positions"]
+
+      start_loss = compute_loss(start_logits, start_positions)
+      end_loss = compute_loss(end_logits, end_positions)
+
+      total_loss = (start_loss + end_loss) / 2.0
+
+      train_op = optimization.create_optimizer(
+          total_loss, learning_rate, num_train_steps, num_warmup_steps, use_tpu)
+
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
+          mode=mode,
+          loss=total_loss,
+          train_op=train_op,
+          scaffold_fn=scaffold_fn)
+    elif mode == tf.estimator.ModeKeys.PREDICT:
+      predictions = {
+          "unique_ids": unique_ids,
+          "start_logits": start_logits,
+          "end_logits": end_logits,
+      }
+      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
+          mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
+    else:
+      raise ValueError(
+          "Only TRAIN and PREDICT modes are supported: %s" % (mode))
+
+    return output_spec
+
+  return model_fn
+```
+从上面的代码中发现，loss由两部分构成，答案start_positions的预测和end_positions的预测。
+```
+def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
+                 use_one_hot_embeddings):
+  """Creates a classification model."""
+  model = modeling.BertModel(
+      config=bert_config,
+      is_training=is_training,
+      input_ids=input_ids,
+      input_mask=input_mask,
+      token_type_ids=segment_ids,
+      use_one_hot_embeddings=use_one_hot_embeddings)
+
+  final_hidden = model.get_sequence_output()
+
+  final_hidden_shape = modeling.get_shape_list(final_hidden, expected_rank=3)
+  batch_size = final_hidden_shape[0]
+  seq_length = final_hidden_shape[1]
+  hidden_size = final_hidden_shape[2]
+
+  output_weights = tf.get_variable(
+      "cls/squad/output_weights", [2, hidden_size],
+      initializer=tf.truncated_normal_initializer(stddev=0.02))
+
+  output_bias = tf.get_variable(
+      "cls/squad/output_bias", [2], initializer=tf.zeros_initializer())
+
+  final_hidden_matrix = tf.reshape(final_hidden,
+                                   [batch_size * seq_length, hidden_size])
+  logits = tf.matmul(final_hidden_matrix, output_weights, transpose_b=True)
+  logits = tf.nn.bias_add(logits, output_bias)
+
+  logits = tf.reshape(logits, [batch_size, seq_length, 2])
+  logits = tf.transpose(logits, [2, 0, 1])
+
+  unstacked_logits = tf.unstack(logits, axis=0)
+
+  (start_logits, end_logits) = (unstacked_logits[0], unstacked_logits[1])
+
+  return (start_logits, end_logits)
+```
+**模型的输出来自于sequence_output，即模型最后一层的输出，shape为[batch_size, seq_length, hidden_size ]，之后再加一个全连接层，unpack成两个部分，分别对应答案的两个位置。**
