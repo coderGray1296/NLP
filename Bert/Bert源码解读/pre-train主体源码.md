@@ -1,6 +1,6 @@
 ## 本篇文章主要解读预训练的代码pre-train
 pre-train是迁移学习的基础，虽然Google已经发布了各种预训练好的模型，而且因为资源消耗巨大，自己再预训练也不现实（在Google Cloud TPU v2 上训练BERT-Base要花费近500刀，耗时达到两周。在GPU上可想而知只会更贵），但是学习bert的预训练方法可以为我们弄懂整个bert的运行流程提供莫大的帮助。
-pre-train涉及到的模块为以下三个：
+**pre-train涉及到的模块为以下三个：**
 - tokenization.py
 - create_pretraining_data.py
 - run_pretraining.py
@@ -308,8 +308,127 @@ Label = NotNext
 2. 在create_masked_lm_predictions函数里，一个序列在指定MASK数量后，有80%被真正MASK，10%还是保留原来的token，10%被随机替换成其他的token。
 
 ##### 保存instance
+```
+def write_instance_to_example_files(instances, tokenizer, max_seq_length,
+                                    max_predictions_per_seq, output_files):
+  """Create TF example files from `TrainingInstance`s."""
+  writers = []
+  for output_file in output_files:
+    writers.append(tf.python_io.TFRecordWriter(output_file))
 
+  writer_index = 0
 
+  total_written = 0
+  for (inst_index, instance) in enumerate(instances):
+    input_ids = tokenizer.convert_tokens_to_ids(instance.tokens)
+    input_mask = [1] * len(input_ids)
+    segment_ids = list(instance.segment_ids)
+    assert len(input_ids) <= max_seq_length
+
+    while len(input_ids) < max_seq_length:
+      input_ids.append(0)
+      input_mask.append(0)
+      segment_ids.append(0)
+
+    assert len(input_ids) == max_seq_length
+    assert len(input_mask) == max_seq_length
+    assert len(segment_ids) == max_seq_length
+
+    masked_lm_positions = list(instance.masked_lm_positions)
+    masked_lm_ids = tokenizer.convert_tokens_to_ids(instance.masked_lm_labels)
+    masked_lm_weights = [1.0] * len(masked_lm_ids)
+
+    while len(masked_lm_positions) < max_predictions_per_seq:
+      masked_lm_positions.append(0)
+      masked_lm_ids.append(0)
+      masked_lm_weights.append(0.0)
+
+    next_sentence_label = 1 if instance.is_random_next else 0
+
+    features = collections.OrderedDict()
+    features["input_ids"] = create_int_feature(input_ids)
+    features["input_mask"] = create_int_feature(input_mask)
+    features["segment_ids"] = create_int_feature(segment_ids)
+    features["masked_lm_positions"] = create_int_feature(masked_lm_positions)
+    features["masked_lm_ids"] = create_int_feature(masked_lm_ids)
+    features["masked_lm_weights"] = create_float_feature(masked_lm_weights)
+    features["next_sentence_labels"] = create_int_feature([next_sentence_label])
+
+    tf_example = tf.train.Example(features=tf.train.Features(feature=features))
+
+    writers[writer_index].write(tf_example.SerializeToString())
+    writer_index = (writer_index + 1) % len(writers)
+
+    total_written += 1
+
+    if inst_index < 20:
+      tf.logging.info("*** Example ***")
+      tf.logging.info("tokens: %s" % " ".join(
+          [tokenization.printable_text(x) for x in instance.tokens]))
+
+      for feature_name in features.keys():
+        feature = features[feature_name]
+        values = []
+        if feature.int64_list.value:
+          values = feature.int64_list.value
+        elif feature.float_list.value:
+          values = feature.float_list.value
+        tf.logging.info(
+            "%s: %s" % (feature_name, " ".join([str(x) for x in values])))
+
+  for writer in writers:
+    writer.close()
+
+  tf.logging.info("Wrote %d total instances", total_written)
+```
+instance保存没什么好说的，只有两点需要注意：
+```
+while len(input_ids) < max_seq_length:
+      input_ids.append(0)
+      input_mask.append(0)
+      segment_ids.append(0)
+```
+1. 之前有short_seq_prob的概率导致样本的长度小于max_predictions_per_seq，这里将这些样本补齐，padding为0，同样还有input_mask和segment_ids；
+2. 将instance的is_random_next转化为变量next_sentence_label保存。
+
+### run_pretraining.py
+这部分就是预训练的执行模块，里面都是tf常规的训练代码，而且前两部分都已经指导预训练的整个逻辑了，这里再简单介绍一下
+##### X和Y的确定
+```
+input_ids = features["input_ids"]
+    input_mask = features["input_mask"]
+    segment_ids = features["segment_ids"]
+    masked_lm_positions = features["masked_lm_positions"]
+    masked_lm_ids = features["masked_lm_ids"]
+    masked_lm_weights = features["masked_lm_weights"]
+    next_sentence_labels = features["next_sentence_labels"]
+    model = modeling.BertModel(
+        config=bert_config,
+        is_training=is_training,
+        input_ids=input_ids,
+        input_mask=input_mask,
+        token_type_ids=segment_ids,
+        use_one_hot_embeddings=use_one_hot_embeddings)
+```
+**其中input_ids,input_mask,segment_ids作为X，剩下的masked_lm_positions,masked_lm_ids,masked_lm_weights,next_sentence_labels共同作为Y**
+##### loss
+```
+(masked_lm_loss,
+     masked_lm_example_loss, masked_lm_log_probs) = get_masked_lm_output(
+         bert_config, model.get_sequence_output(), model.get_embedding_table(),
+         masked_lm_positions, masked_lm_ids, masked_lm_weights)
+
+    (next_sentence_loss, next_sentence_example_loss,
+     next_sentence_log_probs) = get_next_sentence_output(
+         bert_config, model.get_pooled_output(), next_sentence_labels)
+
+    total_loss = masked_lm_loss + next_sentence_loss
+```
+可以看到loss 分别由masked_lm_loss和next_sentence_loss组成，masked_lm_loss针对的是语言模型对MASK起来的标签的预测，即上下文语境预测当前词；而next_sentence_loss是对于句子关系的预测。前者在迁移学习中可以用于标注类任务（分词、NER等），后者可以用于句子关系任务（QA、自然语言推理等）。
+### 总结
+1. tokenization模块：我把它叫做对原始文本段的解析，只有解析过后才能标准化输入；
+2. create_pretraining_data模块：对原始数据进行转换，原始数据本是无标签的数据，通过句子的拼接可以产生句子关系的标签，通过MASK可以产生标注的标签，其本质是语言模型的应用；
+3. run_pretraining模块：在执行预训练的时候针对以上两种标签分别利用bert模型的不同输出部件，计算loss，然后进行梯度下降优化。
 
 
 
